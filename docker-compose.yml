@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: neomarket_b2b
+      POSTGRES_USER: neomarket
+      POSTGRES_PASSWORD: neomarket_pass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  api:
+    build: .
+    ports:
+      - "8001:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://neomarket:neomarket_pass@db:5432/neomarket_b2b
+    depends_on:
+      - db
+    volumes:
+      - ./src:/app/src
+
+volumes:
+  postgres_data:
